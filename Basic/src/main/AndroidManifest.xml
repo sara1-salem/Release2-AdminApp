@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.indooratlas.android.sdk.examples" >
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- For geofence only -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".SplashActivity"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyAcIYWP9YyRxs7VrYBBPQxfPeydUzYzMBM" />
+        <meta-data
+            android:name="com.indooratlas.android.sdk.API_KEY"
+            android:value="de0aa7cd-eaf4-4db8-9d8b-623c506be5cd" />
+        <meta-data
+            android:name="com.indooratlas.android.sdk.API_SECRET"
+            android:value="4S5vc8wmcLz9jzqWJPgwX5u5Ld1J/G9EHtxPBJ6KR8IqclS3j4XQ+9nsrFmjv2f67fvsPCTh1iNB/51brcqcno7rSRX/3QMbH5omruZlkrIfv+9QgnlFrScytJvBCw==" />
+
+        <activity
+            android:name=".ListExamplesActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".mapsoverlay.MapsOverlayActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".geofence.GeofenceMapsOverlayActivity"
+            android:parentActivityName=".ListExamplesActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".geofence.EditActivity"
+            android:label="edit pop up"
+            android:parentActivityName=".geofence.GeofenceMapsOverlayActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="Login page for admin"
+            android:theme="@style/Theme.AppCompat.NoActionBar" >
+
+        </activity>
+<activity android:name=".AddWarningMsg"/>
+        <activity android:name=".geofence.EditActivity2"
+            android:parentActivityName=".AddWarningMsg"
+            />
+        <activity android:name=".EditDeleteWarningMsg"/>
+        <activity android:name=".LandmarkEditDelete"/>
+        <activity android:name=".LandmarkType"
+/>        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.indooratlas.android.sdk.examples.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+    </application>
+
+</manifest>
