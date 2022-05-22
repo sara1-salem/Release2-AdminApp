@@ -1,5 +1,6 @@
 package com.indooratlas.android.sdk.examples.mapsoverlay;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -29,6 +30,8 @@ import com.indooratlas.android.sdk.IALocationManager;
 import com.indooratlas.android.sdk.IALocationRequest;
 import com.indooratlas.android.sdk.IARegion;
 import com.indooratlas.android.sdk.examples.R;
+import com.indooratlas.android.sdk.examples.geofence.EditAndDelete;
+import com.indooratlas.android.sdk.examples.geofence.GeofenceMapsOverlayActivity;
 import com.indooratlas.android.sdk.resources.IAFloorPlan;
 import com.indooratlas.android.sdk.resources.IALatLng;
 import com.indooratlas.android.sdk.resources.IALocationListenerSupport;
@@ -333,5 +336,14 @@ public class MapsOverlayActivity extends FragmentActivity implements LocationLis
             }
         });
         snackbar.show();
+    }
+
+    public void OnDeleteLMBtn(View V){
+        Intent i = new Intent(MapsOverlayActivity.this, EditAndDelete.class);
+        startActivity(i);
+    }
+    public void OnEditLMBtn(View V){
+        Intent i = new Intent(MapsOverlayActivity.this, EditAndDelete.class);
+        startActivity(i);
     }
 }

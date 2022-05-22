@@ -25,30 +25,16 @@ import com.indooratlas.android.sdk.examples.geofence.GeofenceMapsOverlayActivity
 
 
 public class ListExamplesActivity extends AppCompatActivity {
-    private Button signOut;
     private static final String TAG = "IAExample";
 
     private static final int REQUEST_CODE_ACCESS_COARSE_LOCATION = 1;
 
-    // private ExamplesAdapter mAdapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        signOut = (Button) findViewById(R.id.sign_out);
-
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-
-                startActivity(new Intent(ListExamplesActivity.this, LoginActivity.class));
-
-            }
-        });
 
 
     }
@@ -71,6 +57,13 @@ public class ListExamplesActivity extends AppCompatActivity {
     public void onClickc(View v)
     {
         Intent myintent = new Intent(ListExamplesActivity.this, AddWarningMsg.class);
+        // show map to admin -- DONE
+        startActivity(myintent);
+    }
+    public void onClickSO(View v)
+    {
+        FirebaseAuth.getInstance().signOut();
+        Intent myintent = new Intent(ListExamplesActivity.this, LoginActivity.class);
         // show map to admin -- DONE
         startActivity(myintent);
     }

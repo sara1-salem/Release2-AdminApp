@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/save1"
+        android:id="@+id/retun"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="140dp"
@@ -28,7 +28,7 @@
         android:background="@color/gm_blue"
         android:gravity="center"
         android:padding="10dp"
-        android:text="Edit and Delete Warning Messages"
+        android:text="Edit and Delete Landmarks"
         android:textAlignment="center"
         android:textColor="#F8F4F4"
         android:textSize="24sp"
@@ -43,15 +43,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="192dp"
+        android:layout_marginTop="324dp"
         android:text="This feature is currently unavailable"
-        app:layout_constraintBottom_toTopOf="@+id/save1"
+        app:layout_constraintBottom_toTopOf="@+id/retun"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="0.0">
 
     </TextView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-

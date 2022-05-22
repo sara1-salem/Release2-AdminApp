@@ -11,11 +11,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.indooratlas.android.sdk.examples.AddWarningMsg;
 import com.indooratlas.android.sdk.examples.R;
 
 import java.util.ArrayList;
@@ -37,12 +37,12 @@ public class EditActivity2 extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.edit_activity_for_warning_msg);
+        setContentView(R.layout.edit_activity2);
         latlng = (LatLng) getIntent().getParcelableExtra("location");
 
 
         final EditText title1 = (EditText) findViewById(R.id.T1);
-         boton = (Button) findViewById(R.id.save);
+         boton = (Button) findViewById(R.id.save1);
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -98,6 +98,11 @@ public class EditActivity2 extends Activity {
 public void update(String key,Landmarks l){
         myRef.child(key).setValue(l);
 
+}
+
+public void oncnclClick(View v){
+    Intent i = new Intent(EditActivity2.this, AddWarningMsg.class);
+    startActivity(i);
 }
 public void Delete(String key){
     myRef.child(key).setValue(null);

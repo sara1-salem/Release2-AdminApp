@@ -1,4 +1,5 @@
 package com.indooratlas.android.sdk.examples.geofence;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -30,28 +31,18 @@ import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.auth.User;
-import com.indooratlas.android.sdk.IAGeofence;
-import com.indooratlas.android.sdk.IAGeofenceEvent;
-import com.indooratlas.android.sdk.IAGeofenceListener;
-import com.indooratlas.android.sdk.IAGeofenceRequest;
 import com.indooratlas.android.sdk.IALocation;
 import com.indooratlas.android.sdk.IALocationListener;
 import com.indooratlas.android.sdk.IALocationManager;
 import com.indooratlas.android.sdk.IALocationRequest;
 import com.indooratlas.android.sdk.IARegion;
-import com.indooratlas.android.sdk.examples.AddWarningMsg;
-import com.indooratlas.android.sdk.examples.EditDeleteWarningMsg;
-import com.indooratlas.android.sdk.examples.LandmarkEditDelete;
 import com.indooratlas.android.sdk.examples.ListExamplesActivity;
 import com.indooratlas.android.sdk.examples.R;
-import com.indooratlas.android.sdk.examples.SdkExample;
 import com.indooratlas.android.sdk.resources.IAFloorPlan;
 import com.indooratlas.android.sdk.resources.IALatLng;
 import com.indooratlas.android.sdk.resources.IALocationListenerSupport;
@@ -59,12 +50,8 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 public class GeofenceMapsOverlayActivity extends FragmentActivity implements LocationListener, OnMapReadyCallback {
-Button goEdit ;
+Button goEdit , goDelete;
     private static final String TAG = "Landmark";
     private static final int EDIT_REQUEST = 1;
     /* used to decide when bitmap should be downscaled */
@@ -138,8 +125,7 @@ Button classroom,coffee,other;
 
             mLatestLocation = location;
 
-            Log.d(TAG, "new location received with coordinates: " + location.getLatitude()
-                    + "," + location.getLongitude());
+
 
             if (mMap == null) {
                 // location received before map is initialized, ignoring update here
@@ -166,7 +152,6 @@ Button classroom,coffee,other;
     private IARegion.Listener mRegionListener = new IARegion.Listener() {
         @Override
         public void onEnterRegion(IARegion region) {
-            Log.d(TAG, "trace ID:" + mIALocationManager.getExtraInfo().traceId);
             if (region.getType() == IARegion.TYPE_FLOOR_PLAN) {
 
 
@@ -183,11 +168,8 @@ Button classroom,coffee,other;
                 }
 
                 mShowIndoorLocation = true;
-                showInfo("Showing IndoorAtlas SDK's location output");
             }
-            showInfo("Enter " + (region.getType() == IARegion.TYPE_VENUE
-                    ? "VENUE "
-                    : "FLOOR_PLAN ") + region.getId());
+
         }
 
         @Override
@@ -199,9 +181,7 @@ Button classroom,coffee,other;
             }
 
             mShowIndoorLocation = false;
-            showInfo("Exit " + (region.getType() == IARegion.TYPE_VENUE
-                    ? "VENUE "
-                    : "FLOOR_PLAN ") + region.getId());
+
         }
 
     };
@@ -209,8 +189,7 @@ Button classroom,coffee,other;
     @Override
     public void onLocationChanged(@NonNull Location location) {
         if (!mShowIndoorLocation) {
-            Log.d(TAG, "new LocationService location received with coordinates: " + location.getLatitude()
-                    + "," + location.getLongitude());
+
 
             showBlueDot(
                     new LatLng(location.getLatitude(), location.getLongitude()),
@@ -249,18 +228,167 @@ Button classroom,coffee,other;
         ((SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map))
                 .getMapAsync(this);
-        goEdit = findViewById(R.id.editDeleteLm);
+        goDelete = findViewById(R.id.b2);
+        goDelete.setOnClickListener(v -> {
+            Intent myintent = new Intent(GeofenceMapsOverlayActivity.this, EditAndDelete.class);
+            startActivity(myintent);
+        });
+
+        goEdit = findViewById(R.id.b1);
         goEdit.setOnClickListener(v -> {
-            Intent myintent = new Intent(GeofenceMapsOverlayActivity.this, LandmarkEditDelete.class);
+            Intent myintent = new Intent(GeofenceMapsOverlayActivity.this, EditAndDelete.class);
             startActivity(myintent);
         });
         //to retrieve all markers from database to map
-        getData();
+        getClasses();
+        getCoffeeShops();
+        getExits();
+        getWC();
+        getStairs();
+        getOthers();
+
+
 
     }
-    private void getData(){
+    private void getStairs(){
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("Map/Landmark/");
+        myRef = database.getReference("Map/Landmark/stairs");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+//                 This method is called once with the initial value and again
+//                 whenever data at this location is updated.
+                Landmarks value = dataSnapshot.getValue(Landmarks.class);
+
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//
+
+                    String lat = ds.child("latLng/latitude").getValue().toString();
+                    String lng = ds.child("latLng/longitude").getValue().toString();
+                    String msg = ds.child("Title").getValue(String.class);
+
+                    double latitude = Double.parseDouble(lat);
+                    double longitude = Double.parseDouble(lng);
+                    LatLng loc = new LatLng(latitude, longitude);
+                    mMap.addMarker(new MarkerOptions().position(loc).title(msg).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.stair)));
+//                    mMap.addMarker(new MarkerOptions().position(loc).title(msg).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.classroom)));
+
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+//                 Failed to read value
+            }
+        });
+    }
+    private void getOthers(){
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Map/Landmark/others");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+//                 This method is called once with the initial value and again
+//                 whenever data at this location is updated.
+                Landmarks value = dataSnapshot.getValue(Landmarks.class);
+
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//
+
+                    String lat = ds.child("latLng/latitude").getValue().toString();
+                    String lng = ds.child("latLng/longitude").getValue().toString();
+                    String msg = ds.child("Title").getValue(String.class);
+
+                    double latitude = Double.parseDouble(lat);
+                    double longitude = Double.parseDouble(lng);
+                    LatLng loc = new LatLng(latitude, longitude);
+                    mMap.addMarker(new MarkerOptions().position(loc).title(msg).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.other)));
+//                    mMap.addMarker(new MarkerOptions().position(loc).title(msg).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.classroom)));
+
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+//                 Failed to read value
+            }
+        });
+    }
+    private void getExits(){
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Map/Landmark/EXIT");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+//                 This method is called once with the initial value and again
+//                 whenever data at this location is updated.
+                Landmarks value = dataSnapshot.getValue(Landmarks.class);
+
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//
+
+                    String lat = ds.child("latLng/latitude").getValue().toString();
+                    String lng = ds.child("latLng/longitude").getValue().toString();
+                    String msg = ds.child("Title").getValue(String.class);
+
+                    double latitude = Double.parseDouble(lat);
+                    double longitude = Double.parseDouble(lng);
+                    LatLng loc = new LatLng(latitude, longitude);
+                    mMap.addMarker(new MarkerOptions().position(loc).title(msg).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.exit)));
+//                    mMap.addMarker(new MarkerOptions().position(loc).title(msg).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.classroom)));
+
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+//                 Failed to read value
+            }
+        });
+    }
+    private void getWC(){
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Map/Landmark/WC");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+//                 This method is called once with the initial value and again
+//                 whenever data at this location is updated.
+                Landmarks value = dataSnapshot.getValue(Landmarks.class);
+
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//
+
+                    String lat = ds.child("latLng/latitude").getValue().toString();
+                    String lng = ds.child("latLng/longitude").getValue().toString();
+                    String msg = ds.child("Title").getValue(String.class);
+
+                    double latitude = Double.parseDouble(lat);
+                    double longitude = Double.parseDouble(lng);
+                    LatLng loc = new LatLng(latitude, longitude);
+                    mMap.addMarker(new MarkerOptions().position(loc).title(msg).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.wc)));
+//                    mMap.addMarker(new MarkerOptions().position(loc).title(msg).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.classroom)));
+
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+//                 Failed to read value
+            }
+        });
+    }
+    private void getCoffeeShops(){
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Map/Landmark/coffee");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -280,7 +408,7 @@ Button classroom,coffee,other;
                     double latitude = Double.parseDouble(lat);
                     double longitude = Double.parseDouble(lng);
                     LatLng loc = new LatLng(latitude, longitude);
-                    mMap.addMarker(new MarkerOptions().position(loc).title(msg).draggable(true));
+                    mMap.addMarker(new MarkerOptions().position(loc).title(msg).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.cofe)));
 //                    mMap.addMarker(new MarkerOptions().position(loc).title(msg).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.classroom)));
 
                 }
@@ -290,10 +418,52 @@ Button classroom,coffee,other;
             @Override
             public void onCancelled(DatabaseError error) {
 //                 Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
     }
+    private void getClasses(){
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Map/Landmark/class");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+//                 This method is called once with the initial value and again
+//                 whenever data at this location is updated.
+                Landmarks value = dataSnapshot.getValue(Landmarks.class);
+
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//
+
+                    String lat = ds.child("latLng/latitude").getValue().toString();
+                    String lng = ds.child("latLng/longitude").getValue().toString();
+                    String msg = ds.child("Title").getValue(String.class);
+
+                    double latitude = Double.parseDouble(lat);
+                    double longitude = Double.parseDouble(lng);
+                    LatLng loc = new LatLng(latitude, longitude);
+                    mMap.addMarker(new MarkerOptions().position(loc).title(msg).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.classroom)));
+//                    mMap.addMarker(new MarkerOptions().position(loc).title(msg).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.classroom)));
+
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+//                 Failed to read value
+            }
+        });
+    }
+
+
+
+    public void OnBackBtnClick(View V){
+        Intent edit = new Intent(GeofenceMapsOverlayActivity.this, ListExamplesActivity.class);
+        GeofenceMapsOverlayActivity.this.startActivityForResult(edit, EDIT_REQUEST);
+
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -339,16 +509,25 @@ Button classroom,coffee,other;
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 String value = dataSnapshot.getValue(String.class);
-                Log.d("TAG", "Value is: " + value);
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
-                Log.w("TAG", "Failed to read value.", error.toException());
             }
 
 
+        });mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                String s =marker.getTitle();
+                LatLng loc = marker.getPosition();
+                Intent editAndDelete = new Intent(GeofenceMapsOverlayActivity.this, EditAndDelete.class);
+                editAndDelete.putExtra("Title", s);
+                editAndDelete.putExtra("Location", loc);
+                GeofenceMapsOverlayActivity.this.startActivityForResult(editAndDelete, EDIT_REQUEST);
+                return false;
+            }
         });
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -418,8 +597,7 @@ Button classroom,coffee,other;
 
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                Log.d(TAG, "onBitmap loaded with dimensions: " + bitmap.getWidth() + "x"
-                        + bitmap.getHeight());
+
                 if (mOverlayFloorPlan != null && floorPlan.getId().equals(mOverlayFloorPlan.getId())) {
                     setupGroundOverlay(floorPlan, bitmap);
                 }
@@ -432,7 +610,6 @@ Button classroom,coffee,other;
 
             @Override
             public void onBitmapFailed(Drawable placeHolderDrawable) {
-                showInfo("Failed to load bitmap");
                 mOverlayFloorPlan = null;
             }
         };
@@ -475,5 +652,14 @@ Button classroom,coffee,other;
                     Toast.LENGTH_LONG).show();
         }
 
+    }
+
+    public void OnDeleteLMBtn(View V){
+        Intent i = new Intent(GeofenceMapsOverlayActivity.this, EditAndDelete.class);
+        startActivity(i);
+    }
+    public void OnEditLMBtn(View V){
+        Intent i = new Intent(GeofenceMapsOverlayActivity.this, EditAndDelete.class);
+        startActivity(i);
     }
 }

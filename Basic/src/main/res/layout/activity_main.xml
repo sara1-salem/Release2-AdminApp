@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:fitsSystemWindows="true"
-    android:onClick="onClickc"
     tools:context=".ListExamplesActivity">
+
 
 
     <LinearLayout
@@ -67,7 +67,7 @@
             android:background="@color/white"
             android:columnCount="1"
             android:columnOrderPreserved="false"
-            android:rowCount="3">
+            android:rowCount="4">
 
 
             <androidx.cardview.widget.CardView
@@ -186,24 +186,74 @@
 
             </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/sign_out"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_margin="12dp"
+                android:onClick="onClickSO"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="60dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF"
+                    android:gravity="left"
+                    android:onClick="onClickSO"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/logout_btn"></ImageView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dp"
+                        android:onClick="onClickSO"
+                        android:text="Sign out"
+                        android:textColor="#155E97"
+                        android:textSize="20dp"
+                        android:textStyle="bold">
+
+                    </TextView>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+
+
 
         </GridLayout>
 
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_margin="20dp"
+            android:layout_height="53dp"
+            android:background="#FFFFFF"
+            android:ellipsize="middle"
+            android:textStyle="italic"
+            android:padding="10dp"
+            android:text="GuideMe for Admin"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display3"
+            android:textColor="#7d7d7d"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:visibility="visible"
+            tools:visibility="visible" />
     </LinearLayout>
 
-    <Button
 
-        android:id="@+id/sign_out"
-        style="?android:textAppearanceSmall"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#155E97"
-        android:text="@string/btn_sign_out"
-        android:textColor="@android:color/white"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout" />
+
+
     <!--
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"

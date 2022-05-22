@@ -126,7 +126,8 @@ public class AddWarningMsg extends FragmentActivity implements LocationListener,
         /**
          * Listener that handles location change events.
          */
-        private IALocationListener mListener = new IALocationListenerSupport() {
+        private IALocationListener mListener = new IALocationListenerSupport()
+        {
 
                 /**
                  * Location changed, move marker and camera position.
@@ -143,8 +144,7 @@ public class AddWarningMsg extends FragmentActivity implements LocationListener,
 
                         mLatestLocation = location;
 
-                        Log.d(TAG, "new location received with coordinates: " + location.getLatitude()
-                                + "," + location.getLongitude());
+
 
                         if (mMap == null) {
                                 // location received before map is initialized, ignoring update here
@@ -188,11 +188,8 @@ public class AddWarningMsg extends FragmentActivity implements LocationListener,
                                 }
 
                                 mShowIndoorLocation = true;
-                                showInfo("Showing IndoorAtlas SDK's location output");
                         }
-                        showInfo("Enter " + (region.getType() == IARegion.TYPE_VENUE
-                                ? "VENUE "
-                                : "FLOOR_PLAN ") + region.getId());
+
                 }
 
                 @Override
@@ -204,9 +201,7 @@ public class AddWarningMsg extends FragmentActivity implements LocationListener,
                         }
 
                         mShowIndoorLocation = false;
-                        showInfo("Exit " + (region.getType() == IARegion.TYPE_VENUE
-                                ? "VENUE "
-                                : "FLOOR_PLAN ") + region.getId());
+
                 }
 
         };
@@ -214,8 +209,7 @@ public class AddWarningMsg extends FragmentActivity implements LocationListener,
         @Override
         public void onLocationChanged(@NonNull Location location) {
                 if (!mShowIndoorLocation) {
-                        Log.d(TAG, "new LocationService location received with coordinates: " + location.getLatitude()
-                                + "," + location.getLongitude());
+
 
                         showBlueDot(
                                 new LatLng(location.getLatitude(), location.getLongitude()),
@@ -256,7 +250,7 @@ public class AddWarningMsg extends FragmentActivity implements LocationListener,
                         .getMapAsync(this);
                 goEdit = findViewById(R.id.editDeleteWM);
                 goEdit.setOnClickListener(v -> {
-                        Intent myintent = new Intent(AddWarningMsg.this, EditDeleteWarningMsg.class);
+                        Intent myintent = new Intent(AddWarningMsg.this, EditWMSG.class);
                         startActivity(myintent);
                 });
 //to retrieve all warning msgs from database to map
@@ -293,11 +287,25 @@ public class AddWarningMsg extends FragmentActivity implements LocationListener,
 
                         @Override
                         public void onCancelled(DatabaseError error) {
-//                 Failed to read value
-                                Log.w(TAG, "Failed to read value.", error.toException());
                         }
                 });
         }
+        public void OnBackBtnClick(View V){
+                Intent edit = new Intent(AddWarningMsg.this, ListExamplesActivity.class);
+                AddWarningMsg.this.startActivityForResult(edit, EDIT_REQUEST);
+
+        }
+
+        public void OnDeleteMSGBtn(View V){
+                Intent myintent = new Intent(AddWarningMsg.this, EditWMSG.class);
+                startActivity(myintent);
+        }
+        public void OnEditMSGBtn(View V){
+                Intent myintent = new Intent(AddWarningMsg.this, EditWMSG.class);
+                startActivity(myintent);
+        }
+
+
         @Override
         protected void onDestroy() {
                 super.onDestroy();
@@ -404,8 +412,7 @@ public class AddWarningMsg extends FragmentActivity implements LocationListener,
 
                         @Override
                         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                Log.d(TAG, "onBitmap loaded with dimensions: " + bitmap.getWidth() + "x"
-                                        + bitmap.getHeight());
+;
                                 if (mOverlayFloorPlan != null && floorPlan.getId().equals(mOverlayFloorPlan.getId())) {
                                         setupGroundOverlay(floorPlan, bitmap);
                                 }
